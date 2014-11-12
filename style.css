@@ -2,6 +2,12 @@ body {
     margin: 0;
 }
 
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
 .slider-wrap {
     position: relative;
     z-index: 10;
@@ -65,4 +71,29 @@ body {
 .slider__nav-item--next {
     background-position: 0 0;
     left: 20px;
+}
+
+.another-slider {
+    overflow: hidden;
+}
+
+.another-slider .slider__item {
+    position: static;
+    float: left;
+    width: auto;
+}
+
+.another-slider img {
+    max-width: 100%;
+    height: auto;
+}
+
+.cf:before,
+.cf:after {
+    display: table;
+    content: ''
+}
+
+.cf:after {
+    clear: both;
 }

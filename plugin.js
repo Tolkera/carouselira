@@ -1,10 +1,10 @@
 (function($){
 
-    $.fn.carouselira = function(options){
-        var settings = $.extend({
+    function Carouselira(element, options){
+        this.options = $.extend({}, {
             slide: '',
-            speed: 250,
-            firstSlide: '',
+            speed: 1500,
+            firstSlide: 0,
 
             bulletNav: {
                 enable: false,
@@ -16,89 +16,111 @@
                 enable: false,
                 navNext: '',
                 navPrev: ''
-            }
+            },
+
+            effect: 'fade'
+
         }, options);
 
-        return this.each(function(){
-            var slider = $(this);
-            var speed = settings.speed;
-            var slides = slider.find(settings.slide);
-            var firstSlide = settings.firstSlide || 0;
-            var slidesLen = slides.length;
-            var current = firstSlide;
-            var lastSlide = slidesLen - 1;
-            var nextSlide = firstSlide;
+        this.slider = $(element);
+        this.speed = this.options.speed;
+        this.slides = this.slider.find(this.options.slide);
+        this.firstSlide = this.options.firstSlide;
+        this.slidesLen = this.slides.length;
+        this.lastSlide = this.slidesLen - 1;
+        this.init();
+    }
 
-            slides.hide().eq(firstSlide).show();
+    Carouselira.prototype = {
+        init: function(){
+                this.current = this.firstSlide;
+                this.nextSlide = this.firstSlide;
+                this.slides.hide().eq(this.firstSlide).show();
 
-            if(settings.arrowNav.enable) {
-                var prevBtn = slider.find(settings.arrowNav.navPrev);
-                var nextBtn = slider.find(settings.arrowNav.navNext);
+                if(this.options.bulletNav.enable) {
+                    this.bulletActiveClass = this.options.bulletNav.bulletActive;
+                    this.createBulletNav();
+                }
 
-                nextBtn.on('click', function(){
-                    animateWithArrowNav('next');
-                });
-                prevBtn.on('click', function(){
-                    animateWithArrowNav('prev');
-                });
-            }
+                if(this.options.arrowNav.enable) {
+                    var navPrev = this.slider.find(this.options.arrowNav.navPrev);
+                    var navNext = this.slider.find(this.options.arrowNav.navNext);
+                    this.createArrowNav(navPrev, navNext);
+                }
 
-            if(settings.bulletNav.enable) {
-                var navContainer = slider.find(settings.bulletNav.container);
-                var bulletActiveClass = settings.bulletNav.bulletActive;
-                createBulletNav();
-                var bullet = navContainer.children();
-                updateCurrentBullet();
+        },
 
-                bullet.on('click', function(){
-                    var clickedBulletIndex = $(this).index();
-                    slideBullet(clickedBulletIndex);
-                    updateCurrentBullet()
+        createArrowNav: function(prev, next){
+            var self = this;
+
+            passDirection(prev, 'prev');
+            passDirection(next, 'next');
+
+            function passDirection(btn, dir){
+                btn.on('click', function(){
+                    self.findNextSlide({direction: dir})
                 })
             }
+        },
 
-            function changeSlides(){
-                slides.eq(current).fadeOut(speed, function(){
-                    slides.eq(nextSlide).fadeIn(speed);
-                });
-                current = nextSlide;
-                if(settings.bulletNav.enable) {
-                    updateCurrentBullet()
-                }
+        createBulletNav: function() {
+            var bulletsHtml = "";
+            var bullet = this.options.bulletNav.bulletHtml;
+            var navContainer = this.slider.find(this.options.bulletNav.container);
+            for ( var i = 0; i < this.slidesLen; i++ ){
+                bulletsHtml += bullet;
             }
+            navContainer.html(bulletsHtml);
+            this.bullet = navContainer.children();
+            this.updateCurrent();
+            var self = this;
 
-            function animateWithArrowNav(direction) {
-                if(direction == "next") {
-                    nextSlide = (current == lastSlide) ? 0 : current + 1;
+            this.bullet.on('click', function(){
+                var clickedBulletIndex = $(this).index();
+                self.findNextSlide({nextSlide: clickedBulletIndex + ""});
+            })
+        },
+
+        findNextSlide: function(options){
+            if(options.direction){
+                if(options.direction == "next") {
+                    this.nextSlide = (this.current == this.lastSlide) ? 0 : this.current + 1;
                 } else {
-                    nextSlide = (current == 0) ? lastSlide : current - 1;
-                }
-                changeSlides();
-            }
-
-            function createBulletNav() {
-                var bulletsHtml = "";
-                for ( var i = 0; i < slidesLen; i++ ){
-                    bulletsHtml += settings.bulletNav.bulletHtml;
-                }
-
-                navContainer.html(bulletsHtml);
-            }
-
-            function slideBullet(clickedBulletIndex){
-                if(!(clickedBulletIndex == current)) {
-                    nextSlide = clickedBulletIndex;
-                    changeSlides();
+                    this.nextSlide = (this.current == 0) ? this.lastSlide : this.current - 1;
                 }
             }
 
-            function updateCurrentBullet(){
-                bullet.removeClass(bulletActiveClass);
-                bullet.eq(current).addClass(bulletActiveClass);
+            if(options.nextSlide) {
+                if(!(options.nextSlide == this.current)) {
+                    this.nextSlide = options.nextSlide;
+                }
             }
-        });
+            this.changeSlides();
+        },
 
+
+        changeSlides: function(){
+                var self = this;
+                this.slides.eq(this.current).fadeOut(this.speed, function(){
+                    self.slides.eq(self.nextSlide).fadeIn(self.speed);
+                });
+                this.updateCurrent()
+        },
+
+        updateCurrent: function(){
+            this.current = this.nextSlide;
+            if(this.options.bulletNav.enable) {
+                this.bullet.removeClass(this.bulletActiveClass);
+                this.bullet.eq(this.current).addClass(this.bulletActiveClass);
+            }
+        }
     };
+
+    $.fn.carouselira = function(options){
+        return this.each(function(){
+            new Carouselira(this, options)
+        })
+    }
 
 }(jQuery));
 

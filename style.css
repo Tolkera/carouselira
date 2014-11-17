@@ -2,30 +2,23 @@ body {
     margin: 0;
 }
 
-ul {
+ul, ol {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
 .slider-wrap {
+    margin-bottom: 50px;
     position: relative;
-    z-index: 10;
-    padding-top: 20%;
 }
 
 .slider__item {
-    position: absolute;
-    top: 0;
-    left: 0;
     z-index: 15;
-    width: 100%;
-    height: 100%;
     background-repeat: no-repeat;
     background-size: cover;
     text-align: center;
 }
-
 
 .slider__nav-item {
     background: url(img/pagination.png) no-repeat;
@@ -73,17 +66,7 @@ ul {
     left: 20px;
 }
 
-.another-slider {
-    overflow: hidden;
-}
-
-.another-slider .slider__item {
-    position: static;
-    float: left;
-    width: auto;
-}
-
-.another-slider img {
+.testslider img {
     max-width: 100%;
     height: auto;
 }
@@ -97,3 +80,4 @@ ul {
 .cf:after {
     clear: both;
 }
+

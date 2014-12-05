@@ -11,6 +11,7 @@ ul, ol {
 .slider-wrap {
     margin-bottom: 50px;
     position: relative;
+    height: 200px;
 }
 
 .slider__item {
@@ -62,13 +63,18 @@ ul, ol {
 }
 
 .slider__nav-item--prev {
-    background-position: -60px 0;
-    right: 20px;
+    background-position: 0 0;
+    left: 20px;
 }
 
 .slider__nav-item--next {
-    background-position: 0 0;
-    left: 20px;
+    right: 20px;
+    background-position: -60px 0;
+}
+
+.slider {
+    height: 200px;
+    overflow: hidden;
 }
 
 .testslider img {
@@ -84,14 +90,6 @@ ul, ol {
 
 .cf:after {
     clear: both;
-}
-
-.another-slider {
-    height: 300px;
-}
-
-.main-slider {
-    height: 400px;
 }
 
 @media (max-width: 600px) {

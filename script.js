@@ -1,46 +1,37 @@
 $(function(){
-    $('.main-slider').carouselira({
-        speed: 1000,
+
+    $('.first-slider').carouselira({
+        speed: 1,
         slide: '.slider__item',
+        firstSlide: 2,
         bulletNav: {
-            enable: true,
-            container: '.bullet-wrap',
+            container: function(){
+                return $(this).parent().find('.bullet-wrap');
+            },
             bulletHtml: '<li class="bullet__nav-item"></li>',
             bulletActive: 'bullet--active'
         },
         arrowNav: {
             enable: true,
-            navNext: '.slider__nav-item--prev',
-            navPrev: '.slider__nav-item--next'
+            navNext: '.next-1',
+            navPrev: '.prev-1'
         },
-        responsiveHeight: {
-            mobile: '80%',
-            tablet: '50%',
-            desktop: '20%',
-            massiveDesktop: '10%'
+        effect: 'slide'
+    });
+
+    $('.second-slider').carouselira({
+        speed: 0.4,
+        slide: '.slider__item',
+        bulletNav: {
+            container: '.bullet-wrap-1',
+            bulletHtml: '<li class="bullet__nav-item"></li>',
+            bulletActive: 'bullet--active'
+        },
+        arrowNav: {
+            enable: true,
+            navNext: function(){return $(this).parent().find('.slider__nav-item--next')},
+            navPrev: function(){return $(this).parent().find('.slider__nav-item--prev')}
         }
     });
 
-    $('.another-slider').carouselira({
-        speed: 1000,
-        slide: '.slider__item',
-        bulletNav: {
-            enable: true,
-            container: '.bullet-wrap',
-            bulletHtml: '<li class="bullet__nav-item"></li>',
-            bulletActive: 'bullet--active'
-        },
-        arrowNav: {
-            enable: true,
-            navNext: '.slider__nav-item--prev',
-            navPrev: '.slider__nav-item--next'
-        },
-        effect: 'slide',
-        responsiveHeight: {
-            mobile: '80%',
-            tablet: '50%',
-            desktop: '20%',
-            massiveDesktop: '10%'
-        }
-    });
 });

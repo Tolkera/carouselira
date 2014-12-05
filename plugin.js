@@ -3,16 +3,14 @@
     function Carouselira(element, options){
         this.options = $.extend({}, {
             slide: '',
-            speed: 1500,
+            speed: 1,
             firstSlide: 0,
             bulletNav: {
-                enable: false,
                 container: '',
                 bulletHtml: '',
                 bulletActive: ''
             },
             arrowNav: {
-                enable: false,
                 navNext: '',
                 navPrev: ''
             },
@@ -34,20 +32,17 @@
         },
 
         setInitialDisplay: function(){
-            if(this.options.effect == 'slide') {
-                this.slides.hide().eq(this.options.firstSlide).show();
+            switch(this.options.effect) {
+                case 'slide':
+                    this.slides.hide().eq(this.options.firstSlide).show();
+                    break;
+                case 'fade':
+                    this.slides.css('opacity', 0).eq(this.options.firstSlide).css('opacity', 1);
             }
 
-            if(this.options.effect == 'fade') {
-                this.slides.css('opacity', 0).eq(this.options.firstSlide).css('opacity', 1);
-            }
-
-            this.slideContainer = this.slides.parent();
-
-            this.slideContainer.css({
+            this.slider.css({
                 position: 'relative',
-                overflow: 'hidden',
-                height: '100%'
+                overflow: 'hidden'
             });
 
             this.slides.css({
@@ -58,23 +53,26 @@
                 height: '100%'
             });
 
-            if(this.options.bulletNav.enable) {
-                this.bulletActiveClass = this.options.bulletNav.bulletActive;
-                this.createBulletNav();
+
+            if(this.options.bulletNav.container && this.options.bulletNav.bulletHtml) {
+                this.buildBulletNav = true;
+                this.initializeBulletNav();
             }
 
-            if(this.options.arrowNav.enable) {
-                var navPrev = this.slider.find(this.options.arrowNav.navPrev);
-                var navNext = this.slider.find(this.options.arrowNav.navNext);
-                this.createArrowNav(navPrev, navNext);
+            if(this.options.arrowNav.navNext && this.options.arrowNav.navPrev) {
+                this.buildArrowNav = true;
+                this.initializeArrowNav();
             }
         },
 
-        createArrowNav: function(prev, next){
+        initializeArrowNav: function(){
             var self = this;
 
-            passDirection(prev, 'prev');
-            passDirection(next, 'next');
+            var navPrev = this.checkOptionType(this.options.arrowNav.navPrev);
+            var navNext = this.checkOptionType(this.options.arrowNav.navNext);
+
+            passDirection(navPrev, 'prev');
+            passDirection(navNext, 'next');
 
             function passDirection(btn, dir){
                 btn.on('click.carouselira', function(){
@@ -85,17 +83,10 @@
             }
         },
 
-        createBulletNav: function() {
-            var bulletsHtml = "";
-            var bullet = this.options.bulletNav.bulletHtml;
-            var navContainer = this.slider.find(this.options.bulletNav.container);
-            for ( var i = 0; i < this.slidesLen; i++ ){
-                bulletsHtml += bullet;
-            }
-            navContainer.html(bulletsHtml);
-            this.bullet = navContainer.children();
-            this.updateCurrent();
+        initializeBulletNav: function() {
             var self = this;
+            this.createBulletNav();
+            this.updateCurrent();
 
             this.bullet.on('click.carouselira', function(){
                 if(!(self.slider.hasClass('transitioning'))){
@@ -111,10 +102,23 @@
                                 (clickedBulletIndex > self.current) ? dir = "next" : dir = "prev"
                             }
                         }
-                        self.findNextSlide({nextSlide: clickedBulletIndex + "", direction: dir, method: 'bullet'});
+                        self.findNextSlide({nextSlide: clickedBulletIndex, direction: dir, method: 'bullet'});
                     }
                 }
             })
+        },
+
+        createBulletNav: function(){
+            var bulletsHtml = "";
+            var bullet = this.options.bulletNav.bulletHtml;
+            var navContainer;
+            navContainer = this.checkOptionType(this.options.bulletNav.container);
+
+            for ( var i = 0; i < this.slidesLen; i++ ){
+                bulletsHtml += bullet;
+            }
+            navContainer.html(bulletsHtml);
+            this.bullet = navContainer.children();
         },
 
         findNextSlide: function(options){
@@ -140,31 +144,14 @@
 
             self.slider.addClass('transitioning');
 
-            if(this.options.effect == "fade") {
-                currentSlide.css({'opacity': 0,'transition': 'opacity ' + this.options.speed/1000 + 's' + ' ease-in-out'});
-                nextSlide.css({'opacity': 1,'transition': 'opacity ' + self.options.speed/1000 +'s' + ' ease-in-out'});
-           }
-
-           if(this.options.effect == "slide") {
-               var currentSlidePositioning, nextSlidePositioning;
-               if (options == "next") {
-                   currentSlidePositioning = '-100%';
-                   nextSlidePositioning = '100%'
-               } else {
-                   currentSlidePositioning = '100%';
-                   nextSlidePositioning = '-100%'
-               }
-
-               nextSlide.css({'left': nextSlidePositioning}).show().delay()
-                    .queue(function() {
-                        $(this).css({'transition': 'left ' + self.options.speed/1000 +'s' + ' ease-in-out', 'left': '0'});
-                        currentSlide.css({'left': currentSlidePositioning,'transition': 'left ' + self.options.speed/1000 +'s' + ' ease-in-out'});
-                        $(this).on('transitionend', function(){
-                            $(this).dequeue();
-                            currentSlide.hide().css({ left: 0, 'transition': 'none'});
-                        })
-                    })
-           }
+            switch (this.options.effect) {
+                case "fade":
+                    this.changeSlidesWithFading(currentSlide, nextSlide, self);
+                    break;
+                case "slide":
+                    this.changeSlidesWithSliding(currentSlide, nextSlide, self, options);
+                    break;
+            }
 
            nextSlide.on('transitionend', function(){
                currentSlide.off('transitionend');
@@ -174,11 +161,46 @@
            });
         },
 
+        changeSlidesWithFading: function(currentSlide, nextSlide, self){
+            currentSlide.css({'opacity': 0,'transition': 'opacity ' + self.options.speed + 's' + ' ease-in-out'});
+            nextSlide.css({'opacity': 1,'transition': 'opacity ' + self.options.speed +'s' + ' ease-in-out'});
+        },
+
+        changeSlidesWithSliding: function(currentSlide, nextSlide, self, options){
+            var currentSlidePositioning, nextSlidePositioning;
+            if (options == "next") {
+                currentSlidePositioning = '-100%';
+                nextSlidePositioning = '100%'
+            } else {
+                currentSlidePositioning = '100%';
+                nextSlidePositioning = '-100%'
+            }
+
+            nextSlide.css({'left': nextSlidePositioning}).show().delay()
+                .queue(function() {
+                    $(this).css({'transition': 'left ' + self.options.speed +'s' + ' ease-in-out', 'left': '0'});
+                    currentSlide.css({'left': currentSlidePositioning,'transition': 'left ' + self.options.speed +'s' + ' ease-in-out'});
+                    $(this).on('transitionend', function(){
+                        $(this).dequeue();
+                        currentSlide.hide().css({ left: 0, 'transition': 'none'});
+                    })
+                })
+        },
+
         updateCurrent: function(){
             this.current = this.nextSlide;
-            if(this.options.bulletNav.enable) {
-                this.bullet.removeClass(this.bulletActiveClass);
-                this.bullet.eq(this.current).addClass(this.bulletActiveClass);
+            var activeClass = this.options.bulletNav.bulletActive;
+            if(this.buildBulletNav) {
+                this.bullet.removeClass(activeClass).eq(this.current).addClass(activeClass);
+            }
+        },
+
+        checkOptionType: function(option){
+            switch (typeof(option)){
+                case 'function':
+                    return option.call(this.slider);
+                case 'string':
+                    return $(option)
             }
         }
     };

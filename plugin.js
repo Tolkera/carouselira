@@ -1,4 +1,4 @@
-(function($){
+(function($, $window){
 
     function Carouselira(element, options){
         this.options = $.extend({}, {
@@ -16,9 +16,7 @@
                 navNext: '',
                 navPrev: ''
             },
-            effect: 'fade',
-            responsiveHeight: '30%'
-
+            effect: 'fade'
         }, options);
 
         this.slider = $(element);
@@ -44,22 +42,11 @@
                 this.slides.css('opacity', 0).eq(this.options.firstSlide).css('opacity', 1);
             }
 
-            var carouseliraWrap = $('<div/>', {
-             'class': 'carouselira-wrap'
-             }).css({
-                 'position': 'relative',
-                 'padding-top': this.options.responsiveHeight
-             });
-
             this.slideContainer = this.slides.parent();
-            this.slideContainer.wrapAll(carouseliraWrap);
 
             this.slideContainer.css({
-                'position': 'absolute',
+                position: 'relative',
                 overflow: 'hidden',
-                top: 0,
-                left: 0,
-                width: '100%',
                 height: '100%'
             });
 
@@ -70,10 +57,6 @@
                 width: '100%',
                 height: '100%'
             });
-
-            if(this.slideContainer.find('img')) {
-                this.slideContainer.find('img').css({'max-width': '100%', 'height': 'auto'})
-            }
 
             if(this.options.bulletNav.enable) {
                 this.bulletActiveClass = this.options.bulletNav.bulletActive;
@@ -96,10 +79,8 @@
             function passDirection(btn, dir){
                 btn.on('click.carouselira', function(){
                     if(!(self.slider.hasClass('transitioning'))){
-                        self.slider.addClass('transitioning');
                         self.findNextSlide({direction: dir, method: 'arrow'});
                     }
-
                 })
             }
         },
@@ -120,8 +101,6 @@
                 if(!(self.slider.hasClass('transitioning'))){
                     var clickedBulletIndex = $(this).index();
                     if(clickedBulletIndex != self.current) {
-                        self.slider.addClass('transitioning');
-
                         if(self.options.effect == "slide") {
                             var dir = '';
                             if (self.current == 0) {
@@ -139,7 +118,6 @@
         },
 
         findNextSlide: function(options){
-
             if(options.method == "arrow"){
                 if(options.direction == "next") {
                     this.nextSlide = (this.current == this.lastSlide) ? 0 : this.current + 1;
@@ -156,55 +134,44 @@
         },
 
         changeSlides: function(options){
-
             var self = this;
+            var currentSlide = self.slides.eq(self.current);
+            var nextSlide = self.slides.eq(self.nextSlide);
+
+            self.slider.addClass('transitioning');
+
             if(this.options.effect == "fade") {
-
-                this.slides.eq(this.current).css({
-                    'opacity': 0,
-                    'transition': 'opacity ' + this.options.speed/1000 + 's' + ' ease-in-out'
-                });
-                this.slides.eq(this.nextSlide).css({
-                    'opacity': 1,
-                    'transition': 'opacity ' + self.options.speed/1000 +'s' + ' ease-in-out'
-                });
-
-                this.slides.eq(this.nextSlide).on('transitionend', endAnimation);
+                currentSlide.css({'opacity': 0,'transition': 'opacity ' + this.options.speed/1000 + 's' + ' ease-in-out'});
+                nextSlide.css({'opacity': 1,'transition': 'opacity ' + self.options.speed/1000 +'s' + ' ease-in-out'});
            }
 
            if(this.options.effect == "slide") {
-                if(options == "next"){
-                    this.slides.eq(this.nextSlide).css({'left': '100%'}).show().delay()
-                        .queue(function() {
-                            $(this).css({'transition': 'left ' + self.options.speed/1000 +'s' + ' ease-in-out', 'left': '0'});
-                            self.slides.eq(self.current).css({'left': '-100%','transition': 'left ' + self.options.speed/1000 +'s' + ' ease-in-out'});
-                            $(this).on('transitionend', function(){
-                                $(this).dequeue();
-                            })
-                        });
-                } else {
-                    this.slides.eq(this.nextSlide).css({'left': '-100%'}).show().delay()
-                        .queue(function() {
-                            $(this).css({'left': '0','transition': 'left ' + self.options.speed/1000 +'s' + ' ease-in-out'});
-                            self.slides.eq(self.current).css({'left': '100%','transition': 'left ' + self.options.speed/1000 +'s' + ' ease-in-out'});
-                            $(this).on('transitionend', function(){
-                               $(this).dequeue()
-                           })
-                        });
-                }
-                this.slides.eq(this.nextSlide).on('transitionend', function(){
-                    self.slides.eq(self.current).hide();
-                    self.slides.css({ left: 0, 'transition': 'none'});
-                    endAnimation();
-                });
-            }
+               var currentSlidePositioning, nextSlidePositioning;
+               if (options == "next") {
+                   currentSlidePositioning = '-100%';
+                   nextSlidePositioning = '100%'
+               } else {
+                   currentSlidePositioning = '100%';
+                   nextSlidePositioning = '-100%'
+               }
 
-            function endAnimation(){
-                self.slides.eq(self.current).off('transitionend');
-                self.slides.eq(self.nextSlide).off('transitionend');
-                self.slider.removeClass('transitioning');
-                self.updateCurrent();
-            }
+               nextSlide.css({'left': nextSlidePositioning}).show().delay()
+                    .queue(function() {
+                        $(this).css({'transition': 'left ' + self.options.speed/1000 +'s' + ' ease-in-out', 'left': '0'});
+                        currentSlide.css({'left': currentSlidePositioning,'transition': 'left ' + self.options.speed/1000 +'s' + ' ease-in-out'});
+                        $(this).on('transitionend', function(){
+                            $(this).dequeue();
+                            currentSlide.hide().css({ left: 0, 'transition': 'none'});
+                        })
+                    })
+           }
+
+           nextSlide.on('transitionend', function(){
+               currentSlide.off('transitionend');
+               nextSlide.off('transitionend');
+               self.slider.removeClass('transitioning');
+               self.updateCurrent();
+           });
         },
 
         updateCurrent: function(){
@@ -222,5 +189,4 @@
         })
     }
 
-}(jQuery));
-
+}(jQuery, window));

@@ -20,6 +20,11 @@ ul, ol {
     text-align: center;
 }
 
+.slider__item img {
+    max-width: 100%;
+    height: auto;
+}
+
 .slider__nav-item {
     background: url(img/pagination.png) no-repeat;
     display: block;
@@ -81,3 +86,32 @@ ul, ol {
     clear: both;
 }
 
+.another-slider {
+    height: 300px;
+}
+
+.main-slider {
+    height: 400px;
+}
+
+@media (max-width: 600px) {
+
+    .another-slider {
+        height: 300px;
+    }
+
+    .main-slider {
+        height: 300px;
+    }
+}
+
+@media (max-width: 1200px) {
+
+    .another-slider {
+        height: 150px;
+    }
+
+    .main-slider {
+        height: 200px;
+    }
+}

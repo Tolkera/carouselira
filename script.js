@@ -13,7 +13,12 @@ $(function(){
             navNext: '.slider__nav-item--prev',
             navPrev: '.slider__nav-item--next'
         },
-        responsiveHeight: '20%'
+        responsiveHeight: {
+            mobile: '80%',
+            tablet: '50%',
+            desktop: '20%',
+            massiveDesktop: '10%'
+        }
     });
 
     $('.another-slider').carouselira({
@@ -31,6 +36,11 @@ $(function(){
             navPrev: '.slider__nav-item--next'
         },
         effect: 'slide',
-        responsiveHeight: '25%'
+        responsiveHeight: {
+            mobile: '80%',
+            tablet: '50%',
+            desktop: '20%',
+            massiveDesktop: '10%'
+        }
     });
 });

@@ -1,0 +1,4 @@
+carouselira
+===========
+
+jQuery slider plugin

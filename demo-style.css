@@ -11,7 +11,12 @@ ul, ol {
 .slider-wrap {
     margin-bottom: 50px;
     position: relative;
+}
+
+
+.slider {
     height: 200px;
+    overflow: hidden;
 }
 
 .slider__item {
@@ -70,46 +75,4 @@ ul, ol {
 .slider__nav-item--next {
     right: 20px;
     background-position: -60px 0;
-}
-
-.slider {
-    height: 200px;
-    overflow: hidden;
-}
-
-.testslider img {
-    max-width: 100%;
-    height: auto;
-}
-
-.cf:before,
-.cf:after {
-    display: table;
-    content: ''
-}
-
-.cf:after {
-    clear: both;
-}
-
-@media (max-width: 600px) {
-
-    .another-slider {
-        height: 300px;
-    }
-
-    .main-slider {
-        height: 300px;
-    }
-}
-
-@media (max-width: 1200px) {
-
-    .another-slider {
-        height: 150px;
-    }
-
-    .main-slider {
-        height: 200px;
-    }
 }

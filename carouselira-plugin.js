@@ -23,7 +23,7 @@
 
     Carouselira.prototype = {
         init: function(){
-            this.slides = this.slider.find(this.options.slide);
+            this.slides = this.slider.children();
             this.slidesLen = this.slides.length;
             this.lastSlide = this.slidesLen - 1;
             this.current = this.options.firstSlide;
@@ -59,12 +59,12 @@
 
             if(this.options.bulletNav.container && this.options.bulletNav.bulletHtml) {
                 this.buildBulletNav = true;
-                this.initializeArrowNav()
+                this.initializeBulletNav();
             }
 
             if(this.options.arrowNav.navNext && this.options.arrowNav.navPrev) {
                 this.buildArrowNav = true;
-                this.initializeBulletNav()
+                this.initializeArrowNav();
             }
         },
 
@@ -94,6 +94,7 @@
                 if (clickedBulletIndex != self.current){
                     self.handleClick('bullet', '', clickedBulletIndex)
                 }
+
             })
         },
 

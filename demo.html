@@ -4,31 +4,35 @@
     <title>Carouselira</title>
     <link rel="stylesheet" href="demo-style.css"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="plugin.js"></script>
+    <script src="jquery.carouselira.js"></script>
     <script src="demo-script.js"></script>
 </head>
 <body>
-<div class=" slider-wrap">
-    <ul class="first-slider slider cf">
-        <li class="slider__item"><img src="img/home_bg.jpg" alt=""/></li>
-        <li class="slider__item"><img src="img/home_bg_2.jpg" alt=""/></li>
-        <li class="slider__item"><img src="img/home_bg_3.jpg" alt=""/></li>
-    </ul>
-    <button class="slider__nav-item slider__nav-item--next next-1 ">Next</button>
-    <button class="slider__nav-item slider__nav-item--prev prev-1">Prev</button>
-    <ol class="bullet-wrap"></ol>
+<div class="container">
+    <div class="slider-wrap">
+        <ul class="owl-slider">
+            <li><img src="img/slider_1/slide_1.jpg" alt=""/></li>
+            <li><img src="img/slider_1/slide_2.jpg" alt=""/></li>
+            <li><img src="img/slider_1/slide_3.jpg" alt=""/></li>
+            <li><img src="img/slider_1/slide_4.jpg" alt=""/></li>
+        </ul>
+        <button class="slider__nav-item slider__nav-item--next next-1">Next</button>
+        <button class="slider__nav-item slider__nav-item--prev prev-1">Prev</button>
+        <ol class="owl-slider__bullet-wrap"></ol>
+    </div>
+
+    <div class="slider-wrap">
+        <ul class="rainforest-slider">
+            <li class="rainforest-slider__item" style="background-image: url(img/slider_2/slide_1.jpg)"></li>
+            <li class="rainforest-slider__item" style="background-image: url(img/slider_2/slide_2.jpg)"></li>
+            <li class="rainforest-slider__item" style="background-image: url(img/slider_2/slide_3.jpg)"></li>
+        </ul>
+        <button class="slider__nav-item rainforest-slider--prev slider__nav-item--prev">Prev</button>
+        <button class="slider__nav-item rainforest-slider--next slider__nav-item--next">Next</button>
+    </div>
+    <ol class="rainforest-slider__bullet-wrap"></ol>
 </div>
 
-<div class=" slider-wrap">
-    <ul class="second-slider slider">
-        <li class="slider__item" style="background-image: url(img/home_bg_2.jpg)"></li>
-        <li class="slider__item" style="background-image: url(img/home_bg_3.jpg)"></li>
-        <li class="slider__item" style="background-image: url(img/home_bg.jpg)"></li>
-    </ul>
-    <button class="slider__nav-item slider__nav-item--prev">Prev</button>
-    <button class="slider__nav-item slider__nav-item--next">Next</button>
-</div>
-<ol class="bullet-wrap bullet-wrap-1"></ol>
 
 
 

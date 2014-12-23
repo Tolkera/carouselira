@@ -18,6 +18,10 @@
         }, options);
 
         this.slider = $(element);
+        this.cssTransitionSupport = 'WebkitTransition' in document.body.style
+            || 'MozTransition' in document.body.style
+            ||'OTransition' in document.body.style
+            || 'transition' in document.body.style;
         this.init();
     }
 
@@ -149,12 +153,14 @@
                     break;
             }
 
-            nextSlide.on('transitionend', function(){
-                currentSlide.off('transitionend');
-                nextSlide.off('transitionend');
-                self.slider.removeClass('transitioning');
-                self.updateCurrent();
-            });
+            if(this.cssTransitionSupport){
+                nextSlide.on('transitionend', function(){
+                    currentSlide.off('transitionend');
+                    nextSlide.off('transitionend');
+                    self.slider.removeClass('transitioning');
+                    self.updateCurrent();
+                });
+            }
         },
 
         updateCurrent: function(){
@@ -193,15 +199,25 @@
                 nextSlidePositioning = '-100%'
             }
 
-            nextSlide.css({'left': nextSlidePositioning}).show().delay()
-                .queue(function() {
-                    $(this).css({'transition': 'left ' + self.options.speed +'s' + ' ease-in-out', 'left': '0'});
-                    currentSlide.css({'left': currentSlidePositioning,'transition': 'left ' + self.options.speed +'s' + ' ease-in-out'});
-                    $(this).on('transitionend', function(){
-                        $(this).dequeue();
-                        currentSlide.hide().css({ left: 0, 'transition': 'none'});
+            if(this.cssTransitionSupport){
+                nextSlide.css({'left': nextSlidePositioning}).show().delay()
+                    .queue(function() {
+                        $(this).css({'transition': 'left ' + self.options.speed +'s' + ' ease-in-out', 'left': '0'});
+                        currentSlide.css({'left': currentSlidePositioning,'transition': 'left ' + self.options.speed +'s' + ' ease-in-out'});
+                        $(this).on('transitionend', function(){
+                            $(this).dequeue();
+                            currentSlide.hide().css({ left: 0, 'transition': 'none'});
+                        })
                     })
+            } else {
+                var speed = self.options.speed * 1000;
+                nextSlide.css({'left': nextSlidePositioning}).show().animate({left: 0}, speed, function(){});
+                currentSlide.animate({'left': currentSlidePositioning}, speed, function(){
+                    $(this).hide().css({'left': 0});
+                    self.slider.removeClass('transitioning');
+                    self.updateCurrent();
                 })
+            }
         },
 
         checkOptionType: function(option){

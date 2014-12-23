@@ -30,7 +30,6 @@ Example
 Initialize and specify options:
 
     $('.slider').carouselira({
-        slide: '.slide', // specify CSS class
         speed: 1,       // speed in seconds; 1 by default
         firstSlide: 0, // initial slide that will be shown (it does not reorder the html)
         bulletNav: {   // bullet navigation if needed; you should provide a container in your html

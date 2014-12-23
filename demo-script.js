@@ -1,15 +1,15 @@
 $(function(){
 
-    $('.first-slider').carouselira({
+    $('.owl-slider').carouselira({
         speed: 1,
         slide: '.slider__item',
-        firstSlide: 2,
+        firstSlide: 0,
         bulletNav: {
             container: function(){
-                return $(this).parent().find('.bullet-wrap');
+                return $(this).parent().find('.owl-slider__bullet-wrap');
             },
-            bulletHtml: '<li class="bullet__nav-item"></li>',
-            bulletActive: 'bullet--active'
+            bulletHtml: '<li class="owl-slider__nav-item"></li>',
+            bulletActive: 'owl-slider__nav-item--active'
         },
         arrowNav: {
             enable: true,
@@ -19,13 +19,13 @@ $(function(){
         effect: 'slide'
     });
 
-    $('.second-slider').carouselira({
+    $('.rainforest-slider').carouselira({
         speed: 0.4,
         slide: '.slider__item',
         bulletNav: {
-            container: '.bullet-wrap-1',
-            bulletHtml: '<li class="bullet__nav-item"></li>',
-            bulletActive: 'bullet--active'
+            container: '.rainforest-slider__bullet-wrap',
+            bulletHtml: '<li class="rainforest-slider__nav-item"></li>',
+            bulletActive: 'rainforest-slider__nav-item--active'
         },
         arrowNav: {
             enable: true,

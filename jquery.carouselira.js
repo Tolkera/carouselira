@@ -235,5 +235,4 @@
             new Carouselira(this, options)
         })
     }
-
 }(jQuery));

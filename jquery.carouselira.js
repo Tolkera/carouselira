@@ -98,7 +98,6 @@
                 if (clickedBulletIndex != self.current){
                     self.handleClick('bullet', '', clickedBulletIndex)
                 }
-
             })
         },
 
@@ -114,13 +113,11 @@
                 if(this.options.effect == "slide" && method == 'bullet') {
                     nextSlideData.direction = (next > this.current) ? "next" : "prev";
                 }
-
                 this.setNextSlide(nextSlideData);
             }
         },
 
         setNextSlide: function(options){
-
             switch(options.method){
                 case 'arrow':
                     if(options.direction == "next") {
@@ -154,16 +151,12 @@
             }
 
             if(this.cssTransitionSupport){
-                nextSlide.on('transitionend', function(){
-                    currentSlide.off('transitionend');
-                    nextSlide.off('transitionend');
-                    self.slider.removeClass('transitioning');
-                    self.updateCurrent();
-                });
+
             }
         },
 
         updateCurrent: function(){
+            this.slider.removeClass('transitioning');
             this.current = this.nextSlide;
             var activeClass = this.options.bulletNav.bulletActive;
             if(this.buildBulletNav) {
@@ -186,6 +179,7 @@
         changeSlidesWithFading: function(currentSlide, nextSlide){
             currentSlide.css({'opacity': 0,'transition': 'opacity ' + this.options.speed + 's' + ' ease-in-out'});
             nextSlide.css({'opacity': 1,'transition': 'opacity ' + this.options.speed +'s' + ' ease-in-out'});
+            this.updateCurrent();
         },
 
         changeSlidesWithSliding: function(currentSlide, nextSlide, options){
@@ -200,7 +194,7 @@
             }
 
             if(this.cssTransitionSupport){
-                nextSlide.css({'left': nextSlidePositioning}).show().delay()
+                nextSlide.css({'left': nextSlidePositioning}).show().delay(10)
                     .queue(function() {
                         $(this).css({'transition': 'left ' + self.options.speed +'s' + ' ease-in-out', 'left': '0'});
                         currentSlide.css({'left': currentSlidePositioning,'transition': 'left ' + self.options.speed +'s' + ' ease-in-out'});
@@ -208,13 +202,18 @@
                             $(this).dequeue();
                             currentSlide.hide().css({ left: 0, 'transition': 'none'});
                         })
-                    })
+                    });
+                nextSlide.on('transitionend', function(){
+                    currentSlide.off('transitionend');
+                    nextSlide.off('transitionend');
+                    self.updateCurrent();
+                });
+
             } else {
                 var speed = self.options.speed * 1000;
                 nextSlide.css({'left': nextSlidePositioning}).show().animate({left: 0}, speed, function(){});
                 currentSlide.animate({'left': currentSlidePositioning}, speed, function(){
                     $(this).hide().css({'left': 0});
-                    self.slider.removeClass('transitioning');
                     self.updateCurrent();
                 })
             }

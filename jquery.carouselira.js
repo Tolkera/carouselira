@@ -194,7 +194,7 @@
             }
 
             if(this.cssTransitionSupport){
-                nextSlide.css({'left': nextSlidePositioning}).show().delay(10)
+                nextSlide.css({'left': nextSlidePositioning}).show().delay(50)
                     .queue(function() {
                         $(this).css({'transition': 'left ' + self.options.speed +'s' + ' ease-in-out', 'left': '0'});
                         currentSlide.css({'left': currentSlidePositioning,'transition': 'left ' + self.options.speed +'s' + ' ease-in-out'});

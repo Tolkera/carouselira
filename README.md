@@ -5,7 +5,7 @@ Carouselira is a jQuery slider plugin
 
 Support
 ------------
-IE10+ (uses transitions, no fallback for older browsers)
+IE8+ (uses transitions with a fallback for older browsers)
 
 Details
 ----------
@@ -45,4 +45,9 @@ Initialize and specify options:
     })
 
 
+Troubleshooting
+----------
 
+If the slider doesn't show up check if it's has explicit height in CSS.
+
+If it doesn't work in IE8, check if you have the correct version of jQuery.

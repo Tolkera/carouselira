@@ -48,6 +48,6 @@ Initialize and specify options:
 Troubleshooting
 ----------
 
-If the slider doesn't show up check if it's has explicit height in CSS.
+If the slider doesn't show up check if it has explicit height in CSS.
 
 If it doesn't work in IE8, check if you have the correct version of jQuery.
